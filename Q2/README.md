@@ -22,7 +22,7 @@ sudo chroot file_system /bin/bash -c "apt update && apt install -y stress htop"
 # Syntax
 sudo python3.12 mini_container.py run <hostname> [memory_MB]
 
-# Example: 256 MB-limited container named “demo”
+Example: 256 MB-limited container named “demo”
 sudo python3.12 mini_container.py run demo 256
 
 Manual verification checklist
