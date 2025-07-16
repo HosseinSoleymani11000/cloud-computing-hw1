@@ -46,3 +46,18 @@ Topology Assumed
 │ node3, node4                                  │
 │ eth0 = W.X.Y.Z (same VLAN)                     │
 └────────────────────────────────────────────────┘
+
+### A. Host-based Static Routing  
+Keeps the two `/24` networks logically separate—only two routes on each host.
+
+#### Server A (root namespace)
+```bash
+ip addr add 172.0.0.254/24 dev br1           # gateway for 172/24
+sysctl -w net.ipv4.ip_forward=1
+ip route add 10.10.0.0/24 via W.X.Y.Z        # W.X.Y.Z = Server B eth0
+
+#### Server B (root namespace)
+```bash
+ip addr add 10.10.0.254/24 dev br2           # gateway for 10/24
+sysctl -w net.ipv4.ip_forward=1
+ip route add 172.0.0.0/24 via A.B.C.D        # A.B.C.D = Server A eth0
