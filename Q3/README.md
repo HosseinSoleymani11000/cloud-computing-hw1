@@ -1,47 +1,65 @@
+# Assignment 2 / Problem 3: Flask Status Service
+**Author**: Hossein Soleymani  
+**Term**: Spring 2025
 
-## What’s inside
+This README documents the setup and usage instructions for a minimal Flask-based status service, including the `server.py` application and its corresponding `Dockerfile`, as specified in Problem 3.
+
+---
+
+## What's Inside
 
 - **`server.py`**  
-  A minimal Flask app exposing **`/api/v1/status`**, with:
-  - `GET` → returns `{ "status": "<current>" }` (200 OK)
-  - `POST` → accepts `{ "status": "<new>" }`, saves it in memory, returns it (201 Created)
+  A minimal Flask application exposing the `/api/v1/status` endpoint with:
+  - `GET`: Returns `{ "status": "<current>" }` with HTTP 200 OK.
+  - `POST`: Accepts `{ "status": "<new>" }`, stores the new status in memory, and returns it with HTTP 201 Created.
 
 - **`Dockerfile`**  
-  Builds a slim container image that:
-  1. Installs Flask & Gunicorn via Debian APT  
-  2. Copies in `server.py`  
-  3. Runs the app under an unprivileged user on port **8000**
+  Builds a lightweight container image that:
+  1. Installs Flask and Gunicorn using Debian's APT package manager.
+  2. Copies `server.py` into the image.
+  3. Runs the application as an unprivileged user on port **8000**.
 
 ---
 
 ## Quickstart
 
-1. **Clone & build**
+### 1. Clone & Build
 
-   ```bash
-   git clone <this-repo-url>
-   cd <repo-dir>
-   docker build -t status-svc .
+Clone the repository and build the Docker image:
 
-## Run it
+```bash
+git clone <this-repo-url>
+cd <repo-dir>
+docker build -t status-svc .
+```
 
+### 2. Run the Container
+
+Launch the container, mapping port 8000 to the host:
+
+```bash
 docker run --rm -p 8000:8000 status-svc
+```
 
-## Talk to it 
+### 3. Interact with the Service
 
-# Initial health check
+- **Initial health check**:
+  ```bash
+  curl localhost:8000/api/v1/status
+  ```
+  - Expected output: `{"status":"OK"}`
 
-curl localhost:8000/api/v1/status
-# → {"status":"OK"}
+- **Change the status**:
+  ```bash
+  curl -X POST \
+       -H "Content-Type: application/json" \
+       -d '{"status":"not OK"}' \
+       localhost:8000/api/v1/status
+  ```
+  - Expected output: `{"status":"not OK"}`
 
-# Change the status
-
-curl -X POST \
-     -H "Content-Type: application/json" \
-     -d '{"status":"not OK"}' \
-     localhost:8000/api/v1/status
-# → {"status":"not OK"}
-
-# Verify the update stuck
-curl localhost:8000/api/v1/status
-# → {"status":"not OK"}
+- **Verify the status update**:
+  ```bash
+  curl localhost:8000/api/v1/status
+  ```
+  - Expected output: `{"status":"not OK"}`
