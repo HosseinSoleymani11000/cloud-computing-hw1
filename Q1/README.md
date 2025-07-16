@@ -1,27 +1,24 @@
-# README – Assignment 2 / Problem 1 ( Container Networking )
-Hossein Soleymani — Spring 2025
-================================================================
+# Assignment 2 / Problem 1: Container Networking
 
-This file answers the *written* questions that accompany the two
-bash-scripts I submitted (`create_topology.sh`, `ping_ns.sh`).
-No further code is needed.
+**Hossein Soleymani — Spring 2025**
 
-────────────────────────────────────────────────────────────────
-1 .  Figure 2  ─ What I do after deleting the router namespace
-────────────────────────────────────────────────────────────────
+This document answers the written questions that accompany the two Bash scripts I submitted (`create_topology.sh`, `ping_ns.sh`). No further code is needed.
 
-Goal  The 172.0.0.0/24 LAN (node1, node2) must still talk to
-      10.10.0.0/24 (node3, node4) even though the dedicated
-      `router` namespace and its veths are gone.
+---
 
-Solution  Make the **host itself** (root namespace) the new router.
+## 1. Figure 2 – What happens after deleting the router namespace
 
- Give each bridge an IP inside its own subnet  
-  ```
-  # root namespace
-  ip addr add 172.0.0.254/24 dev br1    # gateway for 172/24
-  ip addr add 10.10.0.254/24 dev br2    # gateway for 10/24
-  ```
+**Goal**  
+The `172.0.0.0/24` LAN (node1, node2) must still talk to `10.10.0.0/24` (node3, node4) even though the dedicated router namespace and its veths are gone.
+
+**Solution**  
+Make the host itself (root namespace) the new router:
+
+1. **Assign bridge IPs** (root namespace)  
+   ```bash
+   ip addr add 172.0.0.254/24 dev br1     # gateway for 172.0.0.0/24
+   ip addr add 10.10.0.254/24 dev br2     # gateway for 10.10.0.0/24
+
 
  Turn on forwarding once for the whole host  
   ```
